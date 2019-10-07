@@ -6,7 +6,7 @@ A notepad in the web with markdown.
 
 ## virtualenv
 
-Install (virtualenvwrapper)[https://virtualenvwrapper.readthedocs.io/en/latest/] and run:
+Install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/])and run:
 
 ```bash
 $ mkvirtualenv --python=python3.6 markpad
