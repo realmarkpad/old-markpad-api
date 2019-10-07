@@ -1,0 +1,20 @@
+version: '3'
+services:
+  web:
+    build: .
+    entrypoint: uvicorn app.main:app --host 0.0.0.0 --port 80 --reload
+    env_file: .env
+    ports:
+      - "80:80"
+    volumes:
+      - .:/markpad
+    depends_on:
+      - db
+  test:
+    build: .
+    entrypoint: pytest
+    volumes:
+      - .:/markpad
+    env_file: test.env
+  db:
+    image: mongo:4.0.9
