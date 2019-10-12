@@ -5,7 +5,22 @@ from app.main import app
 client = TestClient(app)
 
 
-def test_read_main():
-    response = client.get("/")
+# utils
+def extract_keys(old_dict, *args):
+    return {key: value for key, value in old_dict.items() if key in args}
+
+
+# tests
+def test_create_new_document():
+    response = client.get("/minha_pagina")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World!"}
+
+    useful_items = extract_keys(
+        response.json(),
+        "path", "content", "password"
+    )
+    assert useful_items == {
+        "path": "minha_pagina",
+        "content": "",
+        "password": "",
+    }

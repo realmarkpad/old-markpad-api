@@ -16,5 +16,7 @@ services:
     volumes:
       - .:/markpad
     env_file: test.env
+    depends_on:
+      - db
   db:
     image: mongo:4.0.9

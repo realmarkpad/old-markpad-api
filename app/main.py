@@ -4,6 +4,11 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
-@app.get("/")
-def root():
-    return {"message": "Hello World!"}
+@app.get("/{file_path:path}")
+def root(file_path: str):
+    return {
+        "path": file_path,
+        "content": "",
+        "password": "",
+        "child": [],
+    }
