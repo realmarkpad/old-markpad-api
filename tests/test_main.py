@@ -11,16 +11,17 @@ def extract_keys(old_dict, *args):
 
 
 # tests
-def test_create_new_document():
+def test_get_inexistent_document():
     response = client.get("/minha_pagina")
-    assert response.status_code == 200
+    assert response.status_code == 404
 
-    useful_items = extract_keys(
-        response.json(),
-        "path", "content", "password"
-    )
-    assert useful_items == {
-        "path": "minha_pagina",
-        "content": "",
-        "password": "",
+    assert response.json() == {
+        "detail": "The document minha_pagina don't exist!"
     }
+
+
+def test_create_new_document():
+    response = client.post("/minha_pagina")
+    assert response.status_code == 201
+
+    assert "_id" in response.json().keys()
