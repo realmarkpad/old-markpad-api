@@ -22,7 +22,7 @@ $ workon markpad
 
 Create a enviroment file, example:
 ```
-MONGO_URI=mongodb://localhost:27017
+MONGO_URI=mongodb://database:27017
 MONGO_DATABASE_NAME=markpad
 ```
 
