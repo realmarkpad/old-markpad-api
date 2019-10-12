@@ -20,6 +20,12 @@ $ workon markpad
 
 ## Dev enviroment
 
+Create a enviroment file, example:
+```
+MONGO_URI=mongodb://localhost:27017
+MONGO_DATABASE_NAME=markpad
+```
+
 ```bash
 $ docker-compose up
 ```
