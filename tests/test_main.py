@@ -25,3 +25,18 @@ def test_create_new_document():
     assert response.status_code == 201
 
     assert "_id" in response.json().keys()
+
+
+def test_get_document():
+    response = client.get("/minha_pagina")
+    assert response.status_code == 200
+
+    useful_response = extract_keys(
+        response.json(),
+        "path", "content", "password"
+    )
+    assert useful_response == {
+        "path": "minha_pagina",
+        "content": "",
+        "password": ""
+    }

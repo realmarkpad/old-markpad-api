@@ -13,6 +13,7 @@ async def get_document(file_path: str, response: Response):
             status_code=404,
             detail="The document {path} don't exist!".format(path=file_path)
         )
+    requested_doc['_id'] = str(requested_doc['_id'])
     return requested_doc
 
 
