@@ -19,6 +19,13 @@ async def get_document(file_path: str, response: Response):
 
 @app.post("/{file_path:path}", status_code=201)
 async def insert_document(file_path: str):
+    alredy_on_db = await db.document.find_one({"path": file_path}) is not None
+    if alredy_on_db:
+        raise HTTPException(
+            status_code=409,
+            detail="The document {path} alredy exist!".format(path=file_path)
+        )
+
     default_new_doc = {
         "path": file_path,
         "content": "",

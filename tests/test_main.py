@@ -40,3 +40,12 @@ def test_get_document():
         "content": "",
         "password": ""
     }
+
+
+def test_insert_existent_document():
+    response = client.post("/minha_pagina")
+    assert response.status_code == 409
+
+    assert response.json() == {
+        "detail": "The document minha_pagina alredy exist!"
+    }
