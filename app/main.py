@@ -47,3 +47,17 @@ async def insert_document(doc: Document):
     }
     result = await db.document.insert_one(default_new_doc)
     return {"_id": str(result.inserted_id)}
+
+
+@app.put("/document/", status_code=200)
+async def update_document(doc: Document):
+    result = await db.document.update_one(
+        {"path": doc.path},
+        {"$set": {"content": doc.content}}
+    )
+    if result.modified_count == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="The document {path} don't exist!".format(path=doc.path)
+        )
+    return {"detail": "Successfully updated"}
