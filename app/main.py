@@ -1,11 +1,24 @@
 from fastapi import FastAPI, HTTPException
 from starlette.responses import Response
+
 from app.database import db
+
+from typing import List
+from pydantic import BaseModel
+
+
+class Document(BaseModel):
+    _id: str = None
+    path: str
+    content: str = ""
+    password: str = ""
+    child:  List[str] = []
+
 
 app = FastAPI()
 
 
-@app.get("/{file_path:path}", status_code=200)
+@app.get("/document/{file_path:path}", status_code=200)
 async def get_document(file_path: str, response: Response):
     requested_doc = await db.document.find_one({"path": file_path})
     if requested_doc is None:
@@ -17,17 +30,17 @@ async def get_document(file_path: str, response: Response):
     return requested_doc
 
 
-@app.post("/{file_path:path}", status_code=201)
-async def insert_document(file_path: str):
-    alredy_on_db = await db.document.find_one({"path": file_path}) is not None
+@app.post("/document/", status_code=201)
+async def insert_document(doc: Document):
+    alredy_on_db = await db.document.find_one({"path": doc.path}) is not None
     if alredy_on_db:
         raise HTTPException(
             status_code=409,
-            detail="The document {path} alredy exist!".format(path=file_path)
+            detail="The document {path} alredy exist!".format(path=doc.path)
         )
 
     default_new_doc = {
-        "path": file_path,
+        "path": doc.path,
         "content": "",
         "password": "",
         "child": []

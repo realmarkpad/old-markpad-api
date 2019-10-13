@@ -12,7 +12,7 @@ def extract_keys(old_dict, *args):
 
 # tests
 def test_get_inexistent_document():
-    response = client.get("/minha_pagina")
+    response = client.get("document/minha_pagina")
     assert response.status_code == 404
 
     assert response.json() == {
@@ -21,14 +21,17 @@ def test_get_inexistent_document():
 
 
 def test_create_new_document():
-    response = client.post("/minha_pagina")
+    response = client.post(
+        "/document/",
+        json={"path": "minha_pagina"}
+    )
     assert response.status_code == 201
 
     assert "_id" in response.json().keys()
 
 
 def test_get_document():
-    response = client.get("/minha_pagina")
+    response = client.get("document/minha_pagina")
     assert response.status_code == 200
 
     useful_response = extract_keys(
@@ -43,7 +46,10 @@ def test_get_document():
 
 
 def test_insert_existent_document():
-    response = client.post("/minha_pagina")
+    response = client.post(
+        "/document/",
+        json={"path": "minha_pagina"}
+    )
     assert response.status_code == 409
 
     assert response.json() == {
