@@ -34,12 +34,12 @@ def test_get_document():
 
     useful_res = extract_keys(
         res.json(),
-        "path", "content", "password"
+        "path", "content", "child"
     )
     assert useful_res == {
         "path": "minha_pagina",
         "content": "",
-        "password": ""
+        "child": []
     }
 
 
@@ -94,6 +94,7 @@ def test_delete_document():
     res_get = client.get("/document/minha_pagina")
     assert res_get.status_code == 404
 
+
 def test_delete_inexistent_document():
     res = client.delete(
         "/document/",
@@ -102,4 +103,35 @@ def test_delete_inexistent_document():
     assert res.status_code == 400
     assert res.json() == {
         "detail": "The document minha_pagina don't exist!"
+    }
+
+
+def test_insert_child():
+    client.post(
+        "/document/",
+        json={"path": "pai"}
+    )
+    client.post(
+        "/document/",
+        json={"path": "pai/filho"}
+    )
+    res = client.get("/document/pai")
+    assert res.json()["child"] == ["filho"]
+
+    client.post(
+        "/document/",
+        json={"path": "pai/segundo_filho"}
+    )
+    res = client.get("/document/pai")
+    assert res.json()["child"] == ["filho", "segundo_filho"]
+
+
+def test_insert_child_orphan():
+    res = client.post(
+        "/document/",
+        json={"path": "pai_ausente/filho"}
+    )
+    assert res.status_code == 400
+    assert res.json() == {
+        "detail": "The document pai_ausente/filho is orphan!"
     }

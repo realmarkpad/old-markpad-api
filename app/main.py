@@ -38,10 +38,27 @@ async def insert_document(doc: Document):
             detail="The document {path} alredy exist!".format(path=doc.path)
         )
 
+    list_path = doc.path.split("/")
+    if len(list_path) > 1:
+        new_child = list_path.pop()
+        parent_path = "/".join(list_path)
+
+        parent = await db.document.find_one({"path": parent_path})
+        if parent is None:
+            raise HTTPException(
+                status_code=400,
+                detail="The document {path} is orphan!".format(path=doc.path)
+            )
+
+        parent["child"].append(new_child)
+        await db.document.update_one(
+            {"path": parent_path},
+            {"$set": {"child": parent["child"]}}
+        )
+
     default_new_doc = {
         "path": doc.path,
         "content": "",
-        "password": "",
         "child": []
     }
     result = await db.document.insert_one(default_new_doc)
