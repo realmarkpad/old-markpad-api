@@ -10,11 +10,17 @@ services:
       - .:/markpad
     depends_on:
       - db
+    links:
+      - "db:database"
   test:
     build: .
     entrypoint: pytest
     volumes:
       - .:/markpad
     env_file: test.env
+    depends_on:
+      - db
+    links:
+      - "db:database"
   db:
     image: mongo:4.0.9
