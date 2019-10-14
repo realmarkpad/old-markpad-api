@@ -11,7 +11,6 @@ class Document(BaseModel):
     _id: str = None
     path: str
     content: str = ""
-    password: str = ""
     child:  List[str] = []
 
 
@@ -60,4 +59,15 @@ async def update_document(doc: Document):
             status_code=400,
             detail="The document {path} don't exist!".format(path=doc.path)
         )
-    return {"detail": "Successfully updated"}
+    return {"detail": "Successfully updated!"}
+
+
+@app.delete("/document/", status_code=200)
+async def delete_document(doc: Document):
+    result = await db.document.delete_one({"path": doc.path})
+    if result.deleted_count == 0:
+        raise HTTPException(
+            status_code=400,
+            detail="The document {path} don't exist!".format(path=doc.path)
+        )
+    return {"detail": "Successfully deleted!"}

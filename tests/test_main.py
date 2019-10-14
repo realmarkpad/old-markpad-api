@@ -61,7 +61,7 @@ def test_update_document():
     )
     assert res.status_code == 200
     assert res.json() == {
-        "detail": "Successfully updated"
+        "detail": "Successfully updated!"
     }
 
     res_get = client.get("document/minha_pagina")
@@ -78,4 +78,28 @@ def test_update_inexistent_document():
     assert res.status_code == 400
     assert res.json() == {
         "detail": "The document nao_existe don't exist!"
+    }
+
+
+def test_delete_document():
+    res = client.delete(
+        "/document/",
+        json={"path": "minha_pagina"}
+    )
+    assert res.status_code == 200
+    assert res.json() == {
+        "detail": "Successfully deleted!"
+    }
+
+    res_get = client.get("/document/minha_pagina")
+    assert res_get.status_code == 404
+
+def test_delete_inexistent_document():
+    res = client.delete(
+        "/document/",
+        json={"path": "minha_pagina"}
+    )
+    assert res.status_code == 400
+    assert res.json() == {
+        "detail": "The document minha_pagina don't exist!"
     }
