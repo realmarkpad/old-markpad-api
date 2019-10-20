@@ -24,3 +24,5 @@ services:
       - "db:database"
   db:
     image: mongo:4.0.9
+    ports:
+      - "27017:27017"
