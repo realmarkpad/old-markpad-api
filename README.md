@@ -24,6 +24,7 @@ Create a enviroment file, example:
 ```
 MONGO_URI=mongodb://database:27017
 MONGO_DATABASE_NAME=markpad
+FRONTEND_ORIGIN=http://localhost:8080
 ```
 
 Use makefile:

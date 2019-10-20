@@ -1,7 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from starlette.responses import Response
+from starlette.middleware.cors import CORSMiddleware
 
 from app.database import db
+from app.config import FRONTEND_ORIGIN
 
 from typing import List
 from pydantic import BaseModel
@@ -15,6 +17,18 @@ class Document(BaseModel):
 
 
 app = FastAPI()
+
+origins = [
+    FRONTEND_ORIGIN,
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/document/{file_path:path}", status_code=200)
