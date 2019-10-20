@@ -67,11 +67,12 @@ async def insert_document(doc: Document):
                     "child": [last_child]
                 })
             else:
-                parent["child"].append(last_child)
-                await db.document.update_one(
-                    {"path": parent_path},
-                    {"$set": {"child": parent["child"]}}
-                )
+                if last_child not in parent["child"]:
+                    parent["child"].append(last_child)
+                    await db.document.update_one(
+                        {"path": parent_path},
+                        {"$set": {"child": parent["child"]}}
+                    )
             last_child = list_path.pop()
 
     default_new_doc = {
