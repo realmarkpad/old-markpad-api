@@ -109,10 +109,6 @@ def test_delete_inexistent_document():
 def test_insert_child():
     client.post(
         "/document/",
-        json={"path": "pai"}
-    )
-    client.post(
-        "/document/",
         json={"path": "pai/filho"}
     )
     res = client.get("/document/pai")
@@ -125,13 +121,11 @@ def test_insert_child():
     res = client.get("/document/pai")
     assert res.json()["child"] == ["filho", "segundo_filho"]
 
-
-def test_insert_child_orphan():
-    res = client.post(
+    client.post(
         "/document/",
-        json={"path": "pai_ausente/filho"}
+        json={"path": "outro_pai/filho/neto"}
     )
-    assert res.status_code == 400
-    assert res.json() == {
-        "detail": "The document pai_ausente/filho is orphan!"
-    }
+    res = client.get("document/outro_pai/filho")
+    assert res.json()["child"] == ["neto"]
+    res = client.get("document/outro_pai")
+    assert res.status_code == 200
