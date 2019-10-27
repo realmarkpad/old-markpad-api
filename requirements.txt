@@ -9,6 +9,7 @@ Click==7.0
 cryptography==2.7
 dataclasses==0.6
 fastapi==0.40.0
+gunicorn==19.9.0
 h11==0.8.1
 httptools==0.0.13
 idna==2.8
