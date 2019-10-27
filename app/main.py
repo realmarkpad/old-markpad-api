@@ -100,7 +100,7 @@ async def insert_document(doc: Document):
         "last_updated": datetime_utc_now
     }
     result = await db.document.insert_one(default_new_doc)
-    return {"_id": str(result.inserted_id)}
+    return {"_id": str(result.inserted_id), "created_at": datetime_utc_now}
 
 
 @app.put("/document/", status_code=200)
@@ -112,11 +112,15 @@ async def update_document(doc: Document):
             detail="The document {path} don't exist!".format(path=doc.path)
         )
 
+    datetime_utc_now = datetime.utcnow()
     await db.document.update_one(
         {"path": doc.path},
-        {"$set": {"content": doc.content, "last_updated": datetime.utcnow()}}
+        {"$set": {"content": doc.content, "last_updated": datetime_utc_now}}
     )
-    return {"detail": "Successfully updated!"}
+    return {
+        "detail": "Successfully updated!",
+        "last_updated": datetime_utc_now
+    }
 
 
 @app.delete("/document/", status_code=200)

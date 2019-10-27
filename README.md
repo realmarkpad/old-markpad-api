@@ -9,7 +9,7 @@ A notepad in the web with markdown.
 Install [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/]) and run:
 
 ```bash
-$ mkvirtualenv --python=python3.6 markpad
+$ mkvirtualenv --python=python3.6 markpad-api
 ```
 
 To activate the virtual env just:

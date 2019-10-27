@@ -26,6 +26,7 @@ def test_create_new_document():
     )
     assert res.status_code == 201
     assert "_id" in res.json().keys()
+    assert "created_at" in res.json().keys()
 
 
 def test_get_document():
@@ -60,7 +61,8 @@ def test_update_document():
         json={"path": "minha_pagina", "content": "Opa!"}
     )
     assert res.status_code == 200
-    assert res.json() == {
+    useful_res_put = extract_keys(res.json(), "detail")
+    assert useful_res_put == {
         "detail": "Successfully updated!"
     }
 
