@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 from app.database import db
 from app.config import FRONTEND_ORIGIN
 
+from datetime import datetime
 from typing import List
 from pydantic import BaseModel
 
@@ -14,6 +15,7 @@ class Document(BaseModel):
     path: str
     content: str = ""
     child:  List[str] = []
+    created_at: datetime = None
 
 
 app = FastAPI()
@@ -43,6 +45,17 @@ async def get_document(file_path: str, response: Response):
     return requested_doc
 
 
+@app.get("/get_last_updated/{file_path:path}", status_code=200)
+async def get_last_updated(file_path: str):
+    requested_doc = await db.document.find_one({"path": file_path})
+    if requested_doc is None:
+        raise HTTPException(
+            status_code=404,
+            detail="The document {path} don't exist!".format(path=file_path)
+        )
+    return {"last_updated": requested_doc["last_updated"]}
+
+
 @app.post("/document/", status_code=201)
 async def insert_document(doc: Document):
     alredy_on_db = await db.document.find_one({"path": doc.path}) is not None
@@ -51,6 +64,8 @@ async def insert_document(doc: Document):
             status_code=409,
             detail="The document {path} alredy exist!".format(path=doc.path)
         )
+
+    datetime_utc_now = datetime.utcnow()
 
     list_path = doc.path.split("/")
     if len(list_path) > 1:
@@ -64,7 +79,9 @@ async def insert_document(doc: Document):
                 await db.document.insert_one({
                     "path": parent_path,
                     "content": "",
-                    "child": [last_child]
+                    "child": [last_child],
+                    "created_at": datetime_utc_now,
+                    "last_updated": datetime_utc_now
                 })
             else:
                 if last_child not in parent["child"]:
@@ -78,7 +95,9 @@ async def insert_document(doc: Document):
     default_new_doc = {
         "path": doc.path,
         "content": "",
-        "child": []
+        "child": [],
+        "created_at": datetime_utc_now,
+        "last_updated": datetime_utc_now
     }
     result = await db.document.insert_one(default_new_doc)
     return {"_id": str(result.inserted_id)}
@@ -95,7 +114,7 @@ async def update_document(doc: Document):
 
     await db.document.update_one(
         {"path": doc.path},
-        {"$set": {"content": doc.content}}
+        {"$set": {"content": doc.content, "last_updated": datetime.utcnow()}}
     )
     return {"detail": "Successfully updated!"}
 

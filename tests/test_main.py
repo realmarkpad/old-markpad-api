@@ -129,3 +129,8 @@ def test_insert_child():
     assert res.json()["child"] == ["neto"]
     res = client.get("document/outro_pai")
     assert res.status_code == 200
+
+
+def test_get_last_updated():
+    res = client.get("/get_last_updated/pai")
+    assert "last_updated" in res.json().keys()
