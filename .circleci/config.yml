@@ -29,6 +29,6 @@ jobs:
           path: test-reports
 
       - run:
-        name: run codecov
-        command: /
-          codecov
+          name: run codecov
+          command: /
+            codecov
