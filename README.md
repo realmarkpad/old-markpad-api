@@ -17,7 +17,7 @@ $ mkvirtualenv --python=python3.6 markpad-api
 To activate the virtual env just:
 
 ```bash
-$ workon markpad
+$ workon markpad-api
 ```
 
 ## Dev enviroment
