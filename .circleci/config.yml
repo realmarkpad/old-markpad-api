@@ -28,7 +28,4 @@ jobs:
       - store_artifacts:
           path: test-reports
 
-      - run:
-          name: run codecov
-          command: /
-            codecov
+      - run: codecov
